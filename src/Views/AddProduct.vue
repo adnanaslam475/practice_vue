@@ -1,15 +1,14 @@
 <template>
-  <div> </div>
+  <div>
+      Add Product
+  </div>
 </template>
 
 <script>
 export default {
-  name: "HelloWorld",
+  name: "AddProduct",
   data: () => ({
     loading: false,
   }),
-  mounted(){
-    // console.log('heloworld ount');
-  }
 };
 </script>

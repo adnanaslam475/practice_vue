@@ -1,0 +1,32 @@
+*{
+    margin: 0%;
+    padding: 0%;
+} 
+.button{
+    font-size: 40px;
+}
+.footer-main
+{
+    /* width: 100%; */
+    min-height: 100px;
+    margin: 0% !important;
+    background-color: rgb(0, 0, 0);
+}
+.btn{
+    margin-right: 10px;
+}
+.text-h6{
+    text-align: center;
+}
+.auth_btns{
+    display: flex;
+    max-width: 30%;
+    /* justify-content: space-around; */
+    flex-direction: row !important;
+}
+.signup-form{
+    margin-top: 30px;
+    /* max-width: 50%; */
+    /* display: flex;
+    align-self: center; */
+}
