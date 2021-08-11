@@ -1,0 +1,75 @@
+<template>
+  <v-container class="cont">
+    <v-card
+      v-for="(item, i) in this.$store.state.products"
+      :key="i"
+      :loading="isloading"
+      class="mx-auto my-12"
+      max-width="100%"
+    >
+      <template slot="progress">
+        <v-progress-linear color="deep-purple" height="10" indeterminate>
+        </v-progress-linear>
+      </template>
+      <v-carousel style="border: 1px solid red; width: 100%">
+        <v-carousel-item
+          v-for="(img, i) in item.images"
+          :key="i"
+          :src="img"
+          height="100"
+          reverse-transition="fade-transition"
+          transition="fade-transition"
+        ></v-carousel-item>
+      </v-carousel>
+
+      <!-- <v-img height="250" :src="item.images[0]"></v-img> -->
+      <v-card-title>{{ item.name }}</v-card-title>
+
+      <v-card-text>
+        <v-row align="center" class="mx-0"> </v-row>
+        <div class="my-4 text-subtitle-1">$ • {{ item.price }}</div>
+        <div>
+          {{ item.description }}
+        </div>
+      </v-card-text>
+      <v-card-text>
+        <v-chip-group active-class="deep-purple accent-4 white--text" column>
+          <v-chip>{{ item.category }}</v-chip>
+        </v-chip-group>
+      </v-card-text>
+      <v-card-actions>
+        <v-btn color="deep-purple lighten-2" text @click="() => edit(item.id)">
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-container>
+</template>
+
+<script>
+import Card from "../components/ProductsCard.vue";
+
+export default {
+  name: "Products",
+  data: () => ({
+    isloading: false,
+    isAuthenticated: false,
+    user: {},
+  }),
+  components: {
+    Card,
+  },
+  methods: {
+    handleRoute(r) {
+      this.$router.push(`/${r}`);
+    },
+    edit(id) {
+      this.$router.push(`/add-product`, { id });
+    },
+    HandleDelete() {},
+  },
+  mounted() {
+    console.log(this.$store.state.products);
+  },
+  beforeUpdate() {},
+};
+</script>

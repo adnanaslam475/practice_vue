@@ -14,6 +14,24 @@
     </v-toolbar>
     <v-form ref="form" v-model="form" class="pa-4 pt-6">
       <v-text-field
+        v-model="name"
+        :rules="[rules.password, rules.length(6)]"
+        filled
+        color="deep-purple"
+        counter="6"
+        label="Name"
+        style="min-height: 96px"
+        type="text"
+      ></v-text-field>
+      <v-text-field
+        v-model="email"
+        :rules="[rules.email]"
+        filled
+        color="deep-purple"
+        label="Email address"
+        type="email"
+      ></v-text-field>
+      <v-text-field
         v-model="password"
         :rules="[rules.password, rules.length(6)]"
         filled
@@ -29,14 +47,6 @@
         type="number"
         color="deep-purple"
         label="Phone number"
-      ></v-text-field>
-      <v-text-field
-        v-model="email"
-        :rules="[rules.email]"
-        filled
-        color="deep-purple"
-        label="Email address"
-        type="email"
       ></v-text-field>
     </v-form>
     <v-divider></v-divider>
@@ -64,6 +74,7 @@
 export default {
   name: "SignUp",
   data: () => ({
+    name: "",
     email: "",
     form: false,
     isLoading: false,
@@ -90,24 +101,25 @@ export default {
         gender: this.gender,
         phone: this.phone,
       };
-      this.isLoading=true;
+      this.isLoading = true;
       this.$store.dispatch("signup", values);
     },
   },
-  updated() {
-
+  updated() {},
+  mounted() {},
+  computed: {
+    msg() {
+      return this.$store.state.error;
+    },
   },
-  mounted() {}
-  ,
-  computed:{
-    msg(){
-      return this.$store.state.error}
+  beforeUpdate() {
+    if (this.$store.state.error) {
+      this.isLoading = !this.isLoading;
+    } else {
+      setTimeout(() => {
+        this.$router.history.push("/login");
+      }, 1000);
+    }
   },
-  beforeUpdate(){
-    console.log(this.$store.state.error)
-if(this.$store.state.error){
-  !this.isLoading
-}
-  }
 };
 </script>

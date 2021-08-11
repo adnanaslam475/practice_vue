@@ -2,29 +2,20 @@
   <div class="container">
     <Header />
     <router-view></router-view>
-    <HelloWorld />
     <Footer />
   </div>
 </template>
 
 
 <script>
-import Header from "../components/Header";
-import HelloWorld from "../components/HelloWorld";
-import Footer from "../components/Footer";
-
+import Header from "../components/Header.vue";
+import Footer from "../components/Footer.vue";
 export default {
   name: "App",
-  components: {
-    HelloWorld,
-    Header,
-    Footer,
-  },
+  components: { Header, Footer },
   data: () => ({
     name: "adnan",
   }),
-  mounted() {
-    // console.log("Component mounted.");
-  },
+  mounted() {},
 };
 </script>

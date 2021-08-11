@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import App from './src/Views/App.vue';
+import Main from './src/Views/Main.vue';
 import Login from './src/Views/Login.vue';
 import SignUp from './src/Views/Signup.vue';
 import AddProduct from './src/Views/AddProduct.vue';
@@ -10,9 +11,9 @@ Vue.use(Router);
 
 const routes = [
     {
-        name: 'App',
+        name: 'Main',
         path: '/',
-        component: App,
+        component: Main,
     },
     {
         name: 'SignUp',

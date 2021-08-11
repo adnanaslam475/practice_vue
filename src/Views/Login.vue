@@ -37,7 +37,7 @@
       >
         Submit
       </v-btn>
-      <p>{{ this.$store.state.error}}</p>
+      <p>{{ this.$store.state.msg }}</p>
     </v-form>
     <v-divider></v-divider>
   </v-card>
@@ -77,10 +77,8 @@ export default {
     },
   },
   updated: function () {
-     
+    console.log(this.$store.state.msg )
   },
-   computed: {
-     
-  }
+  computed: {},
 };
 </script>

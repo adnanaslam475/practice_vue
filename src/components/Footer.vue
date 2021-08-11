@@ -1,8 +1,8 @@
 <template>
   <v-container>
-    <!-- <v-footer app>
+    <v-footer app>
       <v-row class="footer-main"> Footer </v-row>
-    </v-footer> -->
+    </v-footer>
   </v-container>
 </template>
 
@@ -10,6 +10,9 @@
 export default {
   name: "Footer",
   data: () => ({}),
+  mounted() {
+    // console.log("foterrmount");
+  },
 };
 </script>
 <style scoped>

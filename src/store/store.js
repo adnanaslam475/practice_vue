@@ -1,27 +1,37 @@
 import Vue from 'vue';
 import Vuex from "vuex";
 import { db } from '../main';
-// import VueRouter from 'vue-router';
+import VueRouter from 'vue-router';
+import VueCookies from 'vue-cookies'
 
+const history = new VueRouter();
 Vue.use(Vuex);
 const store = new Vuex.Store({
     state: {
-        auth: null,
-        error: '',
+        user: null,
+        msg: '',
+        products: [],
     },
     mutations: {
         auth(state, msg) {
-            state.error = msg;
+            state.msg = msg;
         },
-        errmsg(state, msg) {
-            // console.log('wet_Errr-->', msg)
-            state.error = msg
+        user(state, userdata) {
+            state.user = userdata
+        },
+        productData(state, obj) {
+            state.products.unshift(obj)
+            obj && history.push('/')
+        },
+        Products(state, prods) {
+            state.msg = ''
+            state.products = prods;
         }
     },
     actions: {
         async signup({ dispatch }, inputValues) {
             try {
-                console.log('inputs in action-->', dispatch, inputValues);
+                // console.log('inputs in action-->', dispatch, inputValues);
                 const { email, password,
                 } = inputValues;
                 const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBxqH55VMdnAOPyt62gEM6w2oH84Nk2Qrc', {
@@ -46,49 +56,78 @@ const store = new Vuex.Store({
                     }
                 }
                 else {
-                    console.log('res', resData)
-                    const again = await db.collection('user').add(inputValues)
+                    const again = await db.collection('users').add(inputValues)
                     console.log(' put in firestore--->', again);
-                    let d = new Date();
-                    d.setTime(d.getTime() + 1 * 24 * 60 * 60 * 1000);
-                    // let expires = "expires=" + d.toUTCString();
-                    // const expirationTime = new Date(new Date().getTime() +
-                    //     parseInt(resData.expiresIn) * 1000)
-                    let user = resData
-                    document.cookie = user
-                    // "Token=" + resData.idToken + ";" + expires + ";path=/";
-                    // commit('auth', resData)
-                    // store.dispatch('auth', inputValues, { root: true })
-
                 }
             } catch (error) {
-                console.log('err64---->;', error);
+                store.commit('auth', 'something went wrong',
+                    { root: true })
             }
         },
-        async login({ dispatch }, inputValues) {
-            console.log(dispatch)
-            const { email, password } = inputValues
-            const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBxqH55VMdnAOPyt62gEM6w2oH84Nk2Qrc', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email,
-                    password,
-                    returnSecureToken: true
+        async login({ dispatch, commit }, inputValues) {
+            try {
+                const { email, password } = inputValues;
+                const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBxqH55VMdnAOPyt62gEM6w2oH84Nk2Qrc', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password,
+                        returnSecureToken: true
+                    })
                 })
-            })
-            const data = await res.json();
-            if (!res.ok) {
-                store.commit('auth', data.error.errors[0].message.split(":")[1], { root: true })
-            }
-            else {
+                const data = await res.json();
+                if (data.error?.errors) {
+                    commit('auth', data.error.message,
+                        { root: true })
+                }
+                else {
+                    let d = new Date();
+                    d.setTime(d.getTime() + 1 * 24 * 60 * 60 * 1000);
+                    store.commit('user', data,
+                        { root: true });
 
-                document.cookie('user', { user: res.json() })
+                    console.log('lgn sucedulful=>', data)
+                    VueCookies.set('cokkieuser', data, "1h")
+                    // const u = 'user' + "=" + "Token=" + data.idToken + ";"
+                    //     + ";" + expires + ";path=/";
+                    // document.cookie('user', JSON.stringify(u));
+                    // $cookies.set("user", u, "1 h")
+                }
+            } catch (error) {
+                console.log('error in 114', error)
+            }
+        },
+        async addProduct({ dispatch, commit }, inputValues) {
+            // console.log(store.state.user, inputValues)
+            try {
+                const res = await db.collection('products').add({
+                    ...inputValues,
+                    userID: Math.random().toFixed(30)
+                    // store.state.user.userId
+                });
+
+                await res.onSnapshot(e => {
+                    store.commit('productData', { ...e.data(), id: e.id }, { root: true });
+                })
+            } catch (error) {
+                store.commit('errmsg', 'something Went wrong, try again', { root: true })
+            }
+        },
+        async ProductsAction({ dispatch, commit }, inputValues) {
+            try {
+                const res = await db.collection('products').get();
+                let arr = [];
+                res.docs.forEach(v => {
+                    arr.push(v.data())
+                })
+                store.commit('Products', arr, { root: true })
+            } catch (error) {
+                store.commit('errmsg', 'something Went wrong, try again', { root: true })
             }
         }
-
     },
     getters: {
 
@@ -98,3 +137,15 @@ const store = new Vuex.Store({
     }
 })
 export default store;
+
+// let pictureRef = firebase.storage().refFromURL(url);
+// pictureRef
+//     .delete()
+//     .then(() => {
+//         //3.
+//         this.images = [...this.images.filter(v => v !== url)];
+//         alert("Picture is deleted successfully!");
+//     })
+//     .catch((err) => {
+//         console.log(err);
+//     });
