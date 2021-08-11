@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-app-bar app color="default" dark>
+    <v-app-bar app color="primary" dark>
       <v-spacer>Vuetify</v-spacer>
       <v-row class="row auth_btns">
         <v-btn

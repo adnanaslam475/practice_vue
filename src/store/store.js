@@ -10,13 +10,12 @@ const store = new Vuex.Store({
         error: '',
     },
     mutations: {
-        auth(auth, data) {
-            console.log('here,',data)
-            this.auth = data
+        auth(state, msg) {
+            state.error = msg;
         },
-        errmsg(_, msg) {
-            console.log('wet_Errr-->', msg)
-            this.error = msg
+        errmsg(state, msg) {
+            // console.log('wet_Errr-->', msg)
+            state.error = msg
         }
     },
     actions: {
@@ -81,11 +80,11 @@ const store = new Vuex.Store({
                 })
             })
             const data = await res.json();
-            console.log('%cstore.js line:83 data', 'color: #007acc;', data);
             if (!res.ok) {
-                store.commit('auth', data.error.errors[0].message, { root: true })
+                store.commit('auth', data.error.errors[0].message.split(":")[1], { root: true })
             }
             else {
+
                 document.cookie('user', { user: res.json() })
             }
         }

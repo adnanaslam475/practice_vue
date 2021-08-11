@@ -95,8 +95,19 @@ export default {
     },
   },
   updated() {
-    console.log("updated--->",this.$store.state);
+
   },
-  mounted() {},
+  mounted() {}
+  ,
+  computed:{
+    msg(){
+      return this.$store.state.error}
+  },
+  beforeUpdate(){
+    console.log(this.$store.state.error)
+if(this.$store.state.error){
+  !this.isLoading
+}
+  }
 };
 </script>

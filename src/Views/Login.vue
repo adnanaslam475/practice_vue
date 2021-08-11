@@ -37,7 +37,7 @@
       >
         Submit
       </v-btn>
-      <p>{{ this.$store.state.error || $store.state.error }}</p>
+      <p>{{ this.$store.state.error}}</p>
     </v-form>
     <v-divider></v-divider>
   </v-card>
@@ -77,11 +77,10 @@ export default {
     },
   },
   updated: function () {
-    this.$nextTick(function () {
-      // Code that will run only after the
-      // entire view has been re-rendered
-    });
-    console.log(this.$store.state.error);
+     
   },
+   computed: {
+     
+  }
 };
 </script>

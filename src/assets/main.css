@@ -5,6 +5,9 @@
 .button{
     font-size: 40px;
 }
+.theme--dark.v-sheet{
+    background-color: rgb(141, 204, 247) !important;
+}
 .footer-main
 {
     /* width: 100%; */
