@@ -38,7 +38,17 @@
         </v-chip-group>
       </v-card-text>
       <v-card-actions>
-        <v-btn color="deep-purple lighten-2" text @click="() => edit(item.id)">
+        <v-btn
+          color="deep-purple lighten-2"
+          text="editsss"
+          @click="() => edit(item.id)"
+        >
+        </v-btn>
+        <v-btn
+          color="deep-purple lighten-2"
+          text="delete"
+          @click="() => HandleDelete(item.id)"
+        >
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -54,23 +64,24 @@ export default {
     user: {},
   }),
   beforeMount() {
-    
     this.myproducts = this.$store.state.products.filter(
       (v) => v.id === this.user.id
     );
   },
   methods: {
     handleRoute(r) {
-      this.$router.push(`/${r}`);
+      this.$router.push(`/${r}`).catch(()=>{});
     },
     edit(id) {
       this.$router.push(`/add-product`, { id });
     },
-    HandleDelete() {},
+    HandleDelete(id) {
+      this.$store.dispatch("deleteProduct", id);
+    },
   },
   mounted() {
     console.log(this.$store.state.products);
   },
-  beforeUpdate() {},
+   
 };
 </script>

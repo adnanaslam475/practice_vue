@@ -1,19 +1,16 @@
 <template>
-  <v-container >
+  <v-container>
     <v-app-bar app color="primary" class="navbar" dark>
       <v-spacer
         style="cursor: pointer; max-width: 50px"
-        @click="() => this.$router.push('/')"
+        @click="() => this.$router.push('/').catch(()=>{})"
         >Products</v-spacer
       >
-      <v-row
-        class="row auth_btns"
-        v-if="isAuthenticated === true || user.token"
-      >
+      <v-row class="row auth_btns" v-if="user.token">
         <v-btn
           color="primary"
           class="btn"
-          @click="() => this.$router.push('/add-product')"
+          @click="() => this.$router.push('/add-product').catch(()=>{})"
           elevation="24"
           >Add product</v-btn
         >
@@ -35,7 +32,6 @@
         >
       </v-row>
     </v-app-bar>
-    {{infoString()}}
   </v-container>
 </template>
 
@@ -50,38 +46,52 @@ export default {
     handleRoute(r) {
       this.$router.push(`/${r}`);
     },
+    // setCookie(cname, cvalue, exdays = 1) {
+    //   var d = new Date();
+    //   d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+    //   var expires = "expires=" + d.toUTCString();
+    //   document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    // },
     logOut() {
-      this.isAuthenticated = false;
-      this.user = {};
-      document.cookie("user", JSON.stringify({}));
+      // let current_user = {};
+      // this.user = current_user;
+      // this.setCookie("user", JSON.stringify(current_user));
+      // this.$router.history.push("/");
+      this.$store.dispatch("logout");
     },
   },
-  mounted() {
-    // const u = document.cookie;
-    console.log("user in heder", JSON.parse(document.cookie("user")));
-  },
-  updated() {
-    console.log("updated27");
-  },
-  created() {
-    console.log("created26", this.$store.state.user);
-    this.$cookie.set("user", this.$store.state.user, "expiring time");
+  beforeMount() {
+    function getCookie(cname) {
+      var name = cname + "=";
+      var decodedCookie = decodeURIComponent(document.cookie);
+      var ca = decodedCookie.split(";");
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == " ") {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    }
+    const u = JSON.parse(getCookie("user"));
+    this.user = u;
+    this.$store.dispatch("SetCurrentUser", u);
   },
   beforeUpdate() {
-    console.log("created270", this.$store.state.user);
     if (this.$store.state.user) {
-      console.log(this.$store.state.user);
-      this.isAuthenticated = true;
-      this.user = this.$store.state.user;
+      // console.log(this.$store.state.user);
+      // this.isAuthenticated = true;
+      // // this.user = this.$store.state.user;
     }
+    // console.log("bupdate");
   },
-  computed: {
-    infoString: function () {
-      console.log('computed here');
-      this.$cookie.set("user", this.$store.state.user, "expiring time");
-      return this.$store.state.user;
+  watch: {
+    "$store.state.user": function () {
+      this.user = this.$store.state.user;
     },
   },
-  
 };
 </script>

@@ -3,6 +3,7 @@ import vuetify from './plugins/vuetify';
 import Textarea from 'vue-textarea-autosize';
 import router from '../router';
 import firebase from "firebase/app";
+import 'firebase/auth'
 import 'firebase/firestore';
 import App from '../src/Views/App.vue'
 import './assets/main.css';

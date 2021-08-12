@@ -11,7 +11,7 @@
         <v-progress-linear color="deep-purple" height="10" indeterminate>
         </v-progress-linear>
       </template>
-      <v-carousel style="border: 1px solid red; width: 100%">
+      <v-carousel style="">
         <v-carousel-item
           v-for="(img, i) in item.images"
           :key="i"
@@ -22,7 +22,6 @@
         ></v-carousel-item>
       </v-carousel>
 
-      <!-- <v-img height="250" :src="item.images[0]"></v-img> -->
       <v-card-title>{{ item.name }}</v-card-title>
 
       <v-card-text>
@@ -38,38 +37,61 @@
         </v-chip-group>
       </v-card-text>
       <v-card-actions>
-        <v-btn color="deep-purple lighten-2" text @click="() => edit(item.id)">
-        </v-btn>
+        <v-btn
+          color="primary"
+          class="btn"
+          @click="() => edit(item.id)"
+          elevation="24"
+          >Edit</v-btn
+        >
+        <v-btn
+          color="primary"
+          class="btn"
+          @click="() => show(item.id)"
+          elevation="24"
+          >Delete</v-btn
+        >
       </v-card-actions>
+
+      <Dialog :show="showmodal" v-if="showmodal" :id="id" />
+      <div v-else></div>
     </v-card>
   </v-container>
 </template>
 
 <script>
-import Card from "../components/ProductsCard.vue";
-
+import Dialog from "../components/Dailog.vue";
 export default {
   name: "Products",
-  data: () => ({
-    isloading: false,
-    isAuthenticated: false,
-    user: {},
-  }),
+  data: function () {
+    return {
+      isloading: false,
+      isAuthenticated: false,
+      user: {},
+      showmodal: false,
+      id: "",
+    };
+  },
+  props: {
+    frommain: String,
+  },
   components: {
-    Card,
+    Dialog,
   },
   methods: {
+    show(id) {
+      this.showmodal = true;
+      this.id = id;
+    },
     handleRoute(r) {
-      this.$router.push(`/${r}`);
+      this.$router.push(`/${r}`).catch(() => {});
     },
     edit(id) {
-      this.$router.push(`/add-product`, { id });
+      this.$router.push(`/add-product`, { id }).catch(() => {});
     },
     HandleDelete() {},
   },
-  mounted() {
-    console.log(this.$store.state.products);
-  },
+  mounted() {},
   beforeUpdate() {},
 };
 </script>
