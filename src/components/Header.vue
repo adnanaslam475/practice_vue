@@ -35,7 +35,6 @@
         >
       </v-row>
     </v-app-bar>
-    {{infoString()}}
   </v-container>
 </template>
 
@@ -58,14 +57,14 @@ export default {
   },
   mounted() {
     // const u = document.cookie;
-    console.log("user in heder", JSON.parse(document.cookie("user")));
+    // console.log("user in heder", JSON.parse(document.cookie("user")));
   },
   updated() {
     console.log("updated27");
   },
   created() {
     console.log("created26", this.$store.state.user);
-    this.$cookie.set("user", this.$store.state.user, "expiring time");
+    this.$cookie.set("headeruser", this.$store.state.user, "expiring time");
   },
   beforeUpdate() {
     console.log("created270", this.$store.state.user);
@@ -77,9 +76,8 @@ export default {
   },
   computed: {
     infoString: function () {
-      console.log('computed here');
-      this.$cookie.set("user", this.$store.state.user, "expiring time");
-      return this.$store.state.user;
+      // console.log('computed here');
+      
     },
   },
   
