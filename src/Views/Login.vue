@@ -77,7 +77,7 @@ export default {
     },
   },
   updated: function () {
-    console.log(this.$store.state.user);
+    // console.log(this.$store.state.user);
   },
   computed: {},
   watch: {

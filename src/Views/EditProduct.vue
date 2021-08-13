@@ -28,11 +28,7 @@
       type="number"
     ></v-text-field>
     <v-row justify="start">
-      <v-select
-        :items="['Mobile', 'Laptop', 'Stationary']"
-        @change="selectCat"
-        label="Select Category"
-      >
+      <v-select :items="items" @change="selectCat" label="Select Category">
         <template v-slot:item="{ item, attrs, on }">
           <v-list-item v-bind="attrs" v-on="on">
             <v-list-item-title
@@ -43,7 +39,6 @@
         </template>
       </v-select>
     </v-row>
-
     <v-flex md6>
       <div>
         <div>
@@ -77,44 +72,40 @@
     </div>
   </v-container>
 </template>
-
-
 <script>
-// import { db } from "../main";
 import firebase from "firebase";
-export default {
-  name: "AddProduct",
-  data: () => ({
-    loading: false,
-    name: "",
-    description: "",
-    category: "",
-    uploadValue: 0,
-    price: "",
-    imageData: "",
-    send: false,
-    images: [],
-    msg: "",
-    img1: "",
-    available: false,
-  }),
-  mounted() {},
 
+export default {
+  name: "EditProduct",
+  data: function () {
+    return {
+      loading: false,
+      name: this.$store.state.product.name,
+      description: this.$store.state.product.description,
+      category: this.$store.state.product.category,
+      uploadValue: 0,
+      price: this.$store.state.product.price,
+      imageData: "",
+      send: false,
+      items: ["Mobile", "Laptop", "Stationary"],
+      images: this.$store.state.product.images,
+      msg: "",
+      img1: "",
+      available: this.$store.state.product.available,
+      data: this.$store.state.product,
+    };
+  },
+  mounted() {
+    console.log("from setore", this.$store.state.product.category);
+    this.selectCat(this.$store.state.product.category);
+  },
   methods: {
     selectCat(e) {
+      console.log("eee", e);
       this.category = e;
     },
     removeImg(url) {
       this.images = this.images.filter((v) => v != url);
-      let pictureRef = firebase.storage().refFromURL(url);
-      pictureRef
-        .delete()
-        .then((res) => {
-          console.log("deleted  success", res);
-        })
-        .catch((err) => {
-          console.log("err in dl8 image");
-        });
     },
     click1() {
       this.$refs.input1.click();
@@ -151,7 +142,7 @@ export default {
               .then((url) => {
                 const imgs = [...this.images, url];
                 this.images = imgs;
-                this.msg=''
+                this.msg = "";
               })
               .catch((e) => {
                 console.log(e);
@@ -169,6 +160,7 @@ export default {
         price: this.price,
         category: this.category,
         images: this.images,
+        pro_id: this.$route.params.id,
       };
       if (values) {
         for (var key in values) {
@@ -183,7 +175,7 @@ export default {
             }
           }
         }
-        this.send == true && this.$store.dispatch("addProduct", values);
+        this.send == true && this.$store.dispatch("updateProduct", values);
       }
     },
   },
@@ -193,6 +185,7 @@ export default {
       this.$router.push("/");
     }
   },
+
   beforeUpdate() {
     console.log("bef_updated");
   },

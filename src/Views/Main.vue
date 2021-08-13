@@ -18,6 +18,7 @@ export default {
     user: null,
   }),
   methods: {},
+   
   mounted() {
     router.beforeEach((to, from, next) => {
       console.log('tofrom-->',to,from,next())

@@ -3,14 +3,14 @@
     <v-app-bar app color="primary" class="navbar" dark>
       <v-spacer
         style="cursor: pointer; max-width: 50px"
-        @click="() => this.$router.push('/').catch(()=>{})"
+        @click="() => this.$router.push('/').catch(() => {})"
         >Products</v-spacer
       >
       <v-row class="row auth_btns" v-if="user.token">
         <v-btn
           color="primary"
           class="btn"
-          @click="() => this.$router.push('/add-product').catch(()=>{})"
+          @click="() => this.$router.push('/add-product').catch(() => {})"
           elevation="24"
           >Add product</v-btn
         >
@@ -46,17 +46,7 @@ export default {
     handleRoute(r) {
       this.$router.push(`/${r}`);
     },
-    // setCookie(cname, cvalue, exdays = 1) {
-    //   var d = new Date();
-    //   d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
-    //   var expires = "expires=" + d.toUTCString();
-    //   document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-    // },
     logOut() {
-      // let current_user = {};
-      // this.user = current_user;
-      // this.setCookie("user", JSON.stringify(current_user));
-      // this.$router.history.push("/");
       this.$store.dispatch("logout");
     },
   },
@@ -80,9 +70,12 @@ export default {
     this.user = u;
     this.$store.dispatch("SetCurrentUser", u);
   },
-  beforeUpdate() {
-    
+  mounted() {
   },
+  beforeUpdate() {
+    console.log("h_b_update");
+  },
+
   watch: {
     "$store.state.user": function () {
       this.user = this.$store.state.user;

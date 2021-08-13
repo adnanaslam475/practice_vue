@@ -2,6 +2,21 @@
     margin: 0%;
     padding: 0%;
 } 
+/* 
+.col-xl, .col-xl-auto, .col-xl-12, .col-xl-11,
+ .col-xl-10, .col-xl-9, .col-xl-8, .col-xl-7,
+  .col-xl-6, .col-xl-5, .col-xl-4, .col-xl-3, 
+  .col-xl-2, .col-xl-1, .col-lg, .col-lg-auto, 
+  .col-lg-12, .col-lg-11, .col-lg-10, .col-lg-9, 
+  .col-lg-8, .col-lg-7, .col-lg-6, .col-lg-5, .col-lg-4,
+   .col-lg-3, .col-lg-2, .col-lg-1, .col-md, 
+   .col-md-auto, .col-md-12, .col-md-11, .col-md-10,
+    .col-md-9, .col-md-8, .col-md-7, .col-md-6, .col-md-5, 
+    .col-md-4, .col-md-3, .col-md-2, .col-md-1, .col-sm, 
+    .col-sm-auto, .col-sm-12, .col-sm-11, .col-sm-10, .col-sm-9,
+     .col-sm-8, .col-sm-7, .col-sm-6, .col-sm-5, .col-sm-4, .col-sm-3, .col-sm-2, .col-sm-1, .col, .col-auto, .col-12, .col-11, .col-10, .col-9, .col-8, .col-7, .col-6, .col-5, .col-4, .col-3, .col-2, .col-1{
+    width: 10px;
+} */
 .button{
     font-size: 40px;
 }
@@ -25,6 +40,7 @@
 .auth_btns{
     display: flex;
     align-items: flex-end;
+
     justify-content: flex-end;
     float: right;
     flex-direction: row !important;
@@ -41,32 +57,71 @@ min-height: 10vh;
     align-self: center; */
 }
 .preview_images{
-    display: flex;
+    display: inline-block;
     flex-direction: row;
-    justify-content: space-between !important;
+    
     margin: 20px 5px 5px 5px;
-    border-radius: 5px;
     width: 100px;
     max-width: 100px;
-    height: 100px;
-    /* border: 1px solid red; */
+    height: 150px;
+    position: relative;
 }
-.preview_images .icons{
-border: 2px solid red;
+.hide_prev_next .v-window__next{
+    display: none;
+}
+.hide_prev_next .v-window__prev{
+    display: none;
+}
+.preview_images .icon{
+    z-index: 10;
+    position: absolute;
+    right: 0%;
+    cursor: pointer;
+}
+.carousel{
+    min-height:300px;
+    max-height:300px;
+    justify-content: center;
 }
 .v-responsive__content{
-    max-width: 30% !important;
-    max-height: 100px;
+    margin: 0%;
 }
+.v-carousel__controls{
+display: none;
+}
+.centerloading{
+    display: flex;
+    min-width: 100vw;
+    justify-content: center;
+} 
 .v-application {
     margin-top: 10%;
     max-width: 50%;
     min-height: 100vh;
 }
+.container{
+    min-width: 1%;
+}
+@media(min-width:960px){
+    .container{
+        min-width: auto !important;
+        max-width: auto !important;
+    }
+}
 .cont{
     display:flex;
-     width:50%;
-      min-height: 100vh
-} .v-window__next{
+       min-height: 100vh;
+} 
+.v-window__next{
     right: 0%;
+}
+.v-window__next{
+    margin: -85px 16px !important;
+}
+
+.v-window__prev{
+margin: -85px 16px !important;
+}
+.card{
+    margin: 10px;
 }

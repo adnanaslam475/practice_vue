@@ -5,22 +5,31 @@ import router from '../../router';
 import firebase from 'firebase';
 
 
-// const history = new VueRouter();
 Vue.use(Vuex);
 const store = new Vuex.Store({
     state: {
         user: null,
         msg: '',
-        signup: '',
+        product: {},
         products: [],
+        time: new Date().getTime().toLocaleString(),
+        signup_success: ''
     },
     mutations: {
-        signup(state, msg) { state.signup = msg },
-        auth(state, msg) { state.msg = msg; },
+        auth(state, msg) {
+            console.log(msg)
+            state.msg = msg;
+        },
         user(state, userdata) {
-            state.user = userdata
-            console.log(router)
-            userdata && router.push('/')
+            state.user = userdata;
+            router.push('/');
+        },
+        editproduct(state, product) {
+            state.product = product;
+        },
+        signup(state, msg) {
+            // console.log('u_data===>', msg);
+            router.push('/');
         },
         productData(state, obj) {
             state.products.unshift(obj)
@@ -42,7 +51,7 @@ const store = new Vuex.Store({
                     },
                     body: JSON.stringify({ email, password, returnSecureToken: true })
                 })
-                const resData = await res.json()
+                const resData = await res.json();
                 if (!res.ok) {
                     const errorId = resData.error.message
                     let errorMsg = ''
@@ -57,9 +66,18 @@ const store = new Vuex.Store({
                     }
                 }
                 else {
-                    store.commit('auth', '',
-                        { root: true })
-                    await db.collection('users').add(inputValues)
+                    await db.collection('users').add(inputValues);
+                    let d = new Date();
+                    d.setTime(d.getTime() + 1 * 24 * 60 * 60 * 1000);
+                    const user = {
+                        email: data.email,
+                        token: data.idToken,
+                        userId: data.localId,
+                    }
+                    var expires = "expires=" + d.toUTCString();
+                    document.cookie = 'user' + "=" + JSON.stringify(user) + ";" + expires + ";path=/";
+                    store.commit('singup', resData,
+                        { root: true });
                 }
             } catch (error) {
                 store.commit('auth', 'something went wrong',
@@ -105,11 +123,13 @@ const store = new Vuex.Store({
         },
         async addProduct({ }, inputValues) {
             try {
+                console.log(store.state.user.userId)
                 const res = await db.collection('products').add({
                     ...inputValues,
                     userID: store.state.user.userId
                 });
                 await res.onSnapshot(e => {
+                    console.log('dtaat-->', e.data())
                     store.commit('productData', { ...e.data(), id: e.id }, { root: true });
                 })
             } catch (error) {
@@ -129,6 +149,11 @@ const store = new Vuex.Store({
             }
         },
         SetCurrentUser({ }, user) {
+            firebase
+                .auth()
+                .onAuthStateChanged(function (user) {
+                    console.log('this-->', user);
+                })
             store.commit('user', user, { root: true })
         },
         async logout({ }) {
@@ -156,25 +181,26 @@ const store = new Vuex.Store({
             } catch (e) {
                 store.commit('auth', 'Something Went Wrong', { root: true });
             }
+        },
+        async updateProduct({ }, v) {
+            try {
+                console.log('editin_action', v)
+                const res = await db.collection('products').doc(`${v.pro_id}`).update({
+                    name: v.name,
+                    description: v.description,
+                    images: v.images,
+                    price: v.price,
+                });
+                res && store.commit('auth', 'updated Successfully', { root: true })
+            } catch (error) {
+                store.commit('auth', 'Something Went Wrong,cannot updated', { root: true });
+            }
         }
     },
     getters: {
 
     },
     modules: {
-
     }
 })
 export default store;
-
-// let pictureRef = firebase.storage().refFromURL(url);
-// pictureRef
-//     .delete()
-//     .then(() => {
-//         //3.
-//         this.images = [...this.images.filter(v => v !== url)];
-//         alert("Picture is deleted successfully!");
-//     })
-//     .catch((err) => {
-//         console.log(err);
-//     });
