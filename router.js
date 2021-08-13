@@ -1,19 +1,23 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-// import App from './src/Views/App.vue';
 import Main from './src/Views/Main.vue';
 import Login from './src/Views/Login.vue';
 import SignUp from './src/Views/Signup.vue';
 import AddProduct from './src/Views/AddProduct.vue';
+import EditProduct from './src/Views/EditProduct.vue';
 import ProductDetails from './src/Views/ProductDetails.vue';
-Vue.use(Router);
 
+Vue.use(Router);
 
 const routes = [
     {
         name: 'Main',
         path: '/',
+        props:true,
         component: Main,
+        meta:{
+            auth:true
+        }
     },
     {
         name: 'SignUp',
@@ -29,6 +33,11 @@ const routes = [
         name: 'AddProduct',
         path: '/add-product',
         component: AddProduct,
+    },
+    {
+        name: 'EditProduct',
+        path: '/edit/:id',
+        component: EditProduct,
     },
     {
         name: 'Products',

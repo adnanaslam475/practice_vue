@@ -14,6 +14,14 @@ import store from './store/store'
 Vue.use(Textarea)
 Vue.config.productionTip = false;
 
+
+// router.beforeEach((to, from, next) => {
+//   console.log('tok_from',to,from)
+//   if (from.name !== 'SignUp' || from.name !== 'Login') {
+//     console.log();
+//   }
+// })
+
 firebase.initializeApp({
   apiKey: "AIzaSyBxqH55VMdnAOPyt62gEM6w2oH84Nk2Qrc",
   authDomain: "vuepractice-7ee82.firebaseapp.com",

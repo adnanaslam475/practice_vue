@@ -2,12 +2,7 @@
   <div class="text-center">
     <v-dialog v-model="dialog" width="500">
       <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          style="display: none"
-          dark
-          v-bind="attrs"
-          v-on="on"
-        >
+        <v-btn style="display: none" dark v-bind="attrs" v-on="on">
           Delete
         </v-btn>
       </template>
@@ -34,11 +29,22 @@ export default {
     show: Boolean,
     id: String,
   },
-
+  mounted() {
+    console.log("d_moutn");
+  },
+  beforeDestroy() {
+    this.$emit("update:dialog", false);
+  },
   methods: {
+    onBackClick() {},
     Delete() {
       console.log("id...", this.id);
       this.$store.dispatch("deleteProduct", this.id);
+    },
+
+    toggleDialog() {
+      this.$emit("update:dialog", false);
+      this.$emit("update:dialogSignUp", true);
     },
   },
 };

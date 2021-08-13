@@ -105,21 +105,18 @@ export default {
       this.$store.dispatch("signup", values);
     },
   },
-  updated() {},
   mounted() {},
   computed: {
     msg() {
       return this.$store.state.error;
     },
   },
-  beforeUpdate() {
-    if (this.$store.state.error) {
-      this.isLoading = !this.isLoading;
-    } else {
-      setTimeout(() => {
-        this.$router.history.push("/login");
-      }, 1000);
-    }
+  watch: {
+    "$store.state.user": function () {
+      console.log("watch in signup", this.$store.state.user.token);
+      this.isloading = this.$store.state.user.token && false;
+      this.$router.push("/");
+    },
   },
 };
 </script>

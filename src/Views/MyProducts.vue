@@ -11,7 +11,7 @@
         <v-progress-linear color="deep-purple" height="10" indeterminate>
         </v-progress-linear>
       </template>
-      <v-carousel style="border: 1px solid red; width: 100%">
+      <v-carousel  >
         <v-carousel-item
           v-for="(img, i) in item.images"
           :key="i"
@@ -22,7 +22,6 @@
         ></v-carousel-item>
       </v-carousel>
 
-      <!-- <v-img height="250" :src="item.images[0]"></v-img> -->
       <v-card-title>{{ item.name }}</v-card-title>
 
       <v-card-text>
@@ -70,7 +69,7 @@ export default {
   },
   methods: {
     handleRoute(r) {
-      this.$router.push(`/${r}`).catch(()=>{});
+      this.$router.push(`/${r}`).catch(() => {});
     },
     edit(id) {
       this.$router.push(`/add-product`, { id });
@@ -82,6 +81,5 @@ export default {
   mounted() {
     console.log(this.$store.state.products);
   },
-   
 };
 </script>

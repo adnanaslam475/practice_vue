@@ -18,6 +18,7 @@ export default {
     user: null,
   }),
   methods: {},
+   
   mounted() {
     // console.log("beforeCreate");
     this.$store.dispatch("ProductsAction");

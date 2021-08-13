@@ -22,6 +22,7 @@ export default {
   data: () => ({
     name: "adnan",
   }),
+   
   mounted() {
     // console.log("Component mounted.");
   },
