@@ -1,5 +1,5 @@
   <template>
-  <v-card class="mx-auto" style="max-width: 500px; align-self: center">
+  <v-card class="mx-auto" style="max-width: 400px; align-self: center">
     <v-system-bar color="deep-purple darken-4" dark>
       <v-spacer></v-spacer>
       <v-icon small> mdi-square </v-icon>
@@ -112,14 +112,11 @@ export default {
       return this.$store.state.error;
     },
   },
-  beforeUpdate() {
-    if (this.$store.state.error) {
-      this.isLoading = !this.isLoading;
-    } else {
-      setTimeout(() => {
-        this.$router.history.push("/login");
-      }, 1000);
-    }
-  },
+  watch:{
+      "$store.state.signup": function () {
+      this.isloading = this.$store.state.signup && false;
+    },
+  }
+  
 };
 </script>

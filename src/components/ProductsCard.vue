@@ -69,10 +69,10 @@ export default {
 
   methods: {
     details(e) {
-      this.$router.push({ name: `/product/${e}` });
+      this.$router.push({ name: `/product/${e}` }).catch(()=>{});
     },
-    edit(e) {
-      cosnole.log("item---.", e);
+    edit(id) {
+      cosnole.log("item---.", id);
     },
     deleteItem(e) {
       cosnole.log("itemtodelet-->---.", e);

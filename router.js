@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import App from './src/Views/App.vue';
+// import App from './src/Views/App.vue';
 import Main from './src/Views/Main.vue';
 import Login from './src/Views/Login.vue';
 import SignUp from './src/Views/Signup.vue';

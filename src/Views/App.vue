@@ -1,21 +1,29 @@
 <template>
-  <div class="container">
+  <v-app app>
     <Header />
-    <router-view></router-view>
+    <router-view />
     <Footer />
-  </div>
+  </v-app>
 </template>
 
 
 <script>
-import Header from "../components/Header.vue";
-import Footer from "../components/Footer.vue";
+import Header from "../components/Header";
+import Products from "./Products.vue";
+import Footer from "../components/Footer";
+
 export default {
   name: "App",
-  components: { Header, Footer },
+  components: {
+    Products,
+    Header,
+    Footer,
+  },
   data: () => ({
     name: "adnan",
   }),
-  mounted() {},
+  mounted() {
+    // console.log("Component mounted.");
+  },
 };
 </script>

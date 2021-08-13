@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-container>
     <v-text-field
       v-model="name"
       filled
@@ -25,9 +25,8 @@
       counter="6"
       label="Product price"
       style="min-height: 96px"
-      type="text"
+      type="number"
     ></v-text-field>
-
     <v-row justify="start">
       <v-select
         :items="['Mobile', 'Laptop', 'Stationary']"
@@ -59,15 +58,13 @@
             accept="image/*"
           />
         </div>
-        <div style="diplay: flex; flex-direction: row !important">
           <div
             v-for="(item, index) in images"
             class="preview_images"
-            :key="index"
-          >
-            <img style="width: 50px; height: 50px" :src="item" />
+            :key="index">
+            <v-icon style="position: absolute; right:0;" large>mdi-close</v-icon>
+            <v-img style="opacity: 0.8" :src="item" />
           </div>
-        </div>
       </div>
     </v-flex>
     <div>
@@ -76,7 +73,7 @@
         >Submit</v-btn
       >
     </div>
-  </v-app>
+  </v-container>
 </template>
 
 
@@ -93,29 +90,19 @@ export default {
     uploadValue: 0,
     price: "",
     imageData: "",
-    images: [],
+    send: false,
+    images: [
+      "https://i.imgur.com/Z0rr9X6.png",
+      "https://i.imgur.com/Z0rr9X6.png",
+      "https://i.imgur.com/Z0rr9X6.png",
+    ],
     msg: "",
     img1: "",
     available: false,
   }),
-  mounted() {
-    // console.log("add prod moutne");
-  },
+  mounted() {},
 
   methods: {
-    deleteFromFirebase(url) {
-      let pictureRef = firebase.storage().refFromURL(url);
-      pictureRef
-        .delete()
-        .then(() => {
-          //3.
-          this.images = [...this.images.filter((v) => v !== url)];
-          alert("Picture is deleted successfully!");
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
     selectCat(e) {
       this.category = e;
     },
@@ -167,18 +154,29 @@ export default {
     submit(e) {
       e.preventDefault();
       const values = {
-        images: this.images,
         name: this.name,
+        images: this.images,
         description: this.description,
         price: this.price,
-        available: this.available,
         category: this.category,
       };
-      this.$store.dispatch("addProduct", values);
+      if (values) {
+        for (var key in values) {
+          if (values.hasOwnProperty(key)) {
+            if (values[key] == "" || !values[key].length) {
+              this.send = false;
+              this.msg = `please enter ${key}`;
+              break;
+            } else {
+              this.send = true;
+            }
+          }
+        }
+        this.send == true && this.$store.dispatch("addProduct", values);
+      }
     },
   },
   updated: function () {
-    console.log("pro_added---<>", this.$store.state.msg);
     if (this.$store.state.msg?.trim().length) {
       this.$router.push("/");
     }

@@ -3,7 +3,7 @@
     <v-toolbar color="deep-purple accent-4" cards dark flat>
       <v-card-title
         class="text-h6 font-weight-regular"
-        style="text-align: 'center'"
+        style="text-align: center"
       >
         Login
       </v-card-title>
@@ -31,6 +31,7 @@
       <v-btn
         type="submit"
         @click="login"
+        :loading="isloading"
         class="white--text"
         color="deep-purple accent-4"
         depressed
@@ -69,7 +70,6 @@ export default {
     login(e) {
       e.preventDefault();
       this.isloading = true;
-      console.log("inlogin->", this.$store.state);
       this.$store.dispatch("login", {
         email: this.email,
         password: this.password,
@@ -77,8 +77,13 @@ export default {
     },
   },
   updated: function () {
-    console.log(this.$store.state.msg )
+    console.log(this.$store.state.user);
   },
   computed: {},
+  watch: {
+    "$store.state.user": function () {
+      this.isloading = this.$store.state.user.token && false;
+    },
+  },
 };
 </script>

@@ -1,30 +1,28 @@
 <template>
-  <div class="container">
-    <Header />
+  <div class="container productscont">
     <Products />
-    <Footer />
   </div>
 </template>
 
 
 <script>
-import Header from "../components/Header";
 import Products from "./Products.vue";
-import Footer from "../components/Footer";
-
+import router from '../../router'
 export default {
   name: "Main",
   components: {
     Products,
-    Header,
-    Footer,
   },
-   
-  
+
   data: () => ({
-    name: "adnan",
+    user: null,
   }),
-  beforeMount() {
+  methods: {},
+  mounted() {
+    router.beforeEach((to, from, next) => {
+      console.log('tofrom-->',to,from,next())
+      });
+    // console.log("beforeCreate");
     this.$store.dispatch("ProductsAction");
   },
 };
