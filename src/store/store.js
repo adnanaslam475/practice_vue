@@ -152,7 +152,6 @@ const store = new Vuex.Store({
             firebase
                 .auth()
                 .onAuthStateChanged(function (user) {
-                    console.log('this-->', user);
                 })
             store.commit('user', user, { root: true })
         },
@@ -194,6 +193,20 @@ const store = new Vuex.Store({
                 res && store.commit('auth', 'updated Successfully', { root: true })
             } catch (error) {
                 store.commit('auth', 'Something Went Wrong,cannot updated', { root: true });
+            }
+        },
+        async specificProduct({ }, name) {
+            try {
+                let arr = []
+                const res = await db.collection('products').where('category', '==', `${name}`)
+                res.onSnapshot(data => {
+                    data.forEach(v => {
+                        arr.push({ id: v.id, ...v.data() })
+                    })
+                })
+                store.commit('Products', arr, { root: true })
+            } catch (error) {
+                store.commit('msg', 'something went wrong', { root: true })
             }
         }
     },

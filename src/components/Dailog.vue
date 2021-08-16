@@ -1,12 +1,12 @@
 <template>
   <div class="text-center">
-    <v-dialog v-model="dialog" width="500">
+    <v-dialog v-model="dialog" @click:outside="emitToParent()" max-width="50%">
       <template v-slot:activator="{ on, attrs }">
         <v-btn style="display: none" dark v-bind="attrs" v-on="on">
           Delete
         </v-btn>
       </template>
-      <v-card>
+      <v-card @click="hide()">
         <v-card-title class="text-h5 grey lighten-2"> Confirm </v-card-title>
         <v-card-text> Are you sure you want to delete product? </v-card-text>
         <v-divider></v-divider>
@@ -32,13 +32,15 @@ export default {
   mounted() {
     console.log("d_moutn");
   },
-  beforeDestroy() {
-    this.$emit("update:dialog", false);
-  },
+
   methods: {
-    onBackClick() {},
+    emitToParent() {
+      this.$emit("childToParent", "adnan");
+    },
+    closeDialog() {
+      this.$emit("showmodal", false);
+    },
     Delete() {
-      console.log("id...", this.id);
       this.$store.dispatch("deleteProduct", this.id);
     },
 

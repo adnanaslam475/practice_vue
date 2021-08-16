@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container style="padding: 0 5% 0 5%">
     <v-text-field
       v-model="name"
       filled
@@ -33,7 +33,7 @@
         @change="selectCat"
         label="Select Category"
       >
-        <template v-slot:item="{ item, attrs, on }">
+        <template v-slot:item="{ item, attrs, on }"  >
           <v-list-item v-bind="attrs" v-on="on">
             <v-list-item-title
               :id="attrs['aria-labelledby']"
@@ -65,7 +65,13 @@
           <v-icon class="icon" @click="() => removeImg(item)" large
             >mdi-close</v-icon
           >
-          <v-img style="opacity: 0.5" :src="item" />
+          <v-img
+            style="opacity: 0.5; cursor: -webkit-grab"
+            draggable="true"
+            @drag="drag(index)"
+            @dragenter="() => index !== drgitem && dragover(index)"
+            :src="item"
+          />
         </div>
       </div>
     </v-flex>
@@ -93,10 +99,15 @@ export default {
     price: "",
     imageData: "",
     send: false,
-    images: [],
+    images: [
+      "https://love2dev.com/img/remove-puzzle-pieces-1920x1280.jpg",
+      "https://c8.alamy.com/comp/P401C3/puzzle-head-brain-concept-with-a-jigsaw-piece-cut-out-on-blue-gray-background-P401C3.jpg",
+      "https://thumbs.dreamstime.com/z/human-head-made-puzzle-16632078.jpg",
+    ],
     msg: "",
     img1: "",
     available: false,
+    drgitem: "",
   }),
   mounted() {},
 
@@ -119,6 +130,15 @@ export default {
     click1() {
       this.$refs.input1.click();
     },
+    drag(i) {
+      this.drgitem = i;
+    },
+    dragover(toIndex) {
+      var element = this.images[this.drgitem];
+      this.images.splice(this.drgitem, 1);
+      this.images.splice(toIndex, 0, element);
+    },
+    
     previewImage(e) {
       this.uploadValue = 0;
       this.img1 = null;
@@ -135,9 +155,6 @@ export default {
         storageRef.on(
           `state_changed`,
           (snapshot) => {
-            console.log(
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-            );
             this.uploadValue =
               (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           },
@@ -151,10 +168,10 @@ export default {
               .then((url) => {
                 const imgs = [...this.images, url];
                 this.images = imgs;
-                this.msg=''
+                this.msg = "";
               })
               .catch((e) => {
-                console.log(e);
+                console.log("err167");
                 this.msg = "Something went wrong..";
               });
           }
@@ -188,14 +205,11 @@ export default {
     },
   },
   updated: function () {
-    console.log("updated");
     if (this.$store.state.msg?.trim().length) {
       this.$router.push("/");
     }
   },
-  beforeUpdate() {
-    console.log("bef_updated");
-  },
+  beforeUpdate() {},
   computed: {},
 };
 </script>

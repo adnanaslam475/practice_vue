@@ -1,12 +1,27 @@
 <template>
-  <v-container class="grey lighten-1">
-    <v-row no-gutters>
-      <v-col sm="6" xl="4" md="4" lg="5" style="border: 1px solid red">
-        <v-card
-          v-for="(item, i) in this.$store.state.products"
-          :key="i"
-          class="mx-auto card"
-        >
+  <v-container class="lighten-5 width">
+    <div style="width: 100%">
+      <v-btn
+        color="primary"
+        class="btn"
+        v-for="(item, index) in searches"
+        @click="() => searchData(item)"
+        :key="index"
+        elevation="24"
+        >{{item}}</v-btn
+      >
+    </div>
+    <v-row no-gutters class="row card" v-if="this.$store.state.products.length">
+      <v-col
+        outlined
+        v-for="(item, i) in this.$store.state.products"
+        :key="i"
+        cols="12"
+        sm="6"
+        md="4"
+        lg="4"
+      >
+        <v-card class="pa-3 ma-2" outlined tile>
           <v-carousel
             :class="[
               'carousel',
@@ -48,39 +63,65 @@
             <v-btn
               color="primary"
               class="btn"
+              @click="() => Details(item.id)"
+              elevation="24"
+              >Details</v-btn
+            >
+            <v-btn
+              color="primary"
+              class="btn"
               @click="() => show(item.id)"
               elevation="24"
               >Delete</v-btn
             >
-            {{ comp.length }}
           </v-card-actions>
-          <Dialog :show.sync="showmodal" v-if="showmodal" :id="id" />
-          <div v-else></div>
         </v-card>
       </v-col>
     </v-row>
+
+    <v-sheet
+      v-else
+      v-for="(item, i) in skeletons"
+      :color="`grey lighten-4`"
+      class="pa-3 ma-2"
+      :key="i"
+    >
+      <v-skeleton-loader
+        v-bind="attrs"
+        type="card-avatar, article, actions"
+        style="min-height: 70vh !important"
+      ></v-skeleton-loader>
+    </v-sheet>
+    <Dialog
+      :show="showmodal"
+      v-on:childToParent="onChildClick"
+      v-if="showmodal"
+      :id="id"
+    />
+    <div v-else></div>
   </v-container>
-
-  <!-- <div class="centerloading" v-else>
-    <v-progress-circular
-      :size="50"
-      color="primary"
-      indeterminate
-    ></v-progress-circular>
-  </div> -->
 </template>
-
 <script>
+//  :color="`grey ${theme.isDark ? 'darken-2' : 'lighten-4'}`"
 import Dialog from "../components/Dailog.vue";
 export default {
   name: "Products",
   data: function () {
     return {
+      attrs: {
+        class: "mb-6",
+        boilerplate: true,
+        elevation: 2,
+      },
+      searches: ["Mobile", "Laptop", "Stationary"],
       isloading: true,
       isAuthenticated: false,
       user: {},
       showmodal: false,
+      search: "",
       id: "",
+      items: [],
+      skeletons: ["", "", ""],
       show_btns: false,
     };
   },
@@ -96,6 +137,12 @@ export default {
       this.showmodal = true;
       this.id = id;
     },
+    onChildClick(value) {
+      this.showmodal = false;
+    },
+    Details: function (id) {
+      this.$router.push(`/product-details/${id}`);
+    },
     handleRoute(r) {
       this.$router.push(`/${r}`);
     },
@@ -103,10 +150,16 @@ export default {
       this.$router.push(`edit/${id}`);
       this.$store.commit("editproduct", product);
     },
+    searchData(cat){
+      this.$store.dispatch('specificProduct',cat)
+    }
   },
   mounted() {
     this.show_btns = this.$store.state.user.token && true;
-    // console.log(this.$store.state.user.token)
+  },
+  updated() {
+    console.log(this.search);
+    this.search.trim().length && this.$store.state.products.filter();
   },
   watch: {
     "$store.state.products": function () {
@@ -115,10 +168,16 @@ export default {
   },
   computed: {
     comp() {
-      console.log('in coomputed==>',this.$store.state.user)
+      console.log("in coomputed==>", this.$store.state.user);
       return this.$store.state.products.filter(
         (v) => v.userID === this.$store.state.user.userId
       );
+    },
+    numberOfPages() {
+      return Math.ceil(this.items.length / this.itemsPerPage);
+    },
+    filteredKeys() {
+      return this.keys.filter((key) => key !== "Name");
     },
   },
 };
