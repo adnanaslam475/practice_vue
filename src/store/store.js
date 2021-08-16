@@ -33,7 +33,6 @@ const store = new Vuex.Store({
         },
         productData(state, obj) {
             state.products.unshift(obj)
-            obj && router.push('/')
         },
         Products(state, prods) {
             state.msg = ''
@@ -118,7 +117,8 @@ const store = new Vuex.Store({
                         { root: true });
                 }
             } catch (error) {
-                console.log('error in 114', error)
+                store.commit('auth', user,
+                { root: true });
             }
         },
         async addProduct({ }, inputValues) {
@@ -177,7 +177,7 @@ const store = new Vuex.Store({
                 res && store.commit('Products', store.state.products.filter(v => v.id !== id),
                     { root: true })
                 store.commit('msg', 'deleted Successfully', { root: true })
-            } catch (error) {
+            } catch (e) {
                 store.commit('auth', 'Something Went Wrong', { root: true });
             }
         },

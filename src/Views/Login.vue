@@ -3,7 +3,7 @@
     <v-toolbar color="deep-purple accent-4" cards dark flat>
       <v-card-title
         class="text-h6 font-weight-regular"
-        style="text-align: 'center'"
+        style="text-align: center"
       >
         Login
       </v-card-title>

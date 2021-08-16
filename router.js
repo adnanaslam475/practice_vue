@@ -10,13 +10,18 @@ import ProductDetails from './src/Views/ProductDetails.vue';
 Vue.use(Router);
 
 const routes = [
-    {
+
+]
+const router = new Router({
+    mode: "history",
+    base: process.env.BASE_URL,
+    routes: [{
         name: 'Main',
         path: '/',
-        props:true,
+        props: true,
         component: Main,
-        meta:{
-            auth:true
+        meta: {
+            auth: true
         }
     },
     {
@@ -38,17 +43,13 @@ const routes = [
         name: 'EditProduct',
         path: '/edit/:id',
         component: EditProduct,
+        // alias:''
     },
     {
         name: 'Products',
         path: '/product-details/:id',
         component: ProductDetails,
-    },
-]
-const router = new Router({
-    mode: "history",
-    base: process.env.BASE_URL,
-    routes
+    },]
 })
 
 export default router

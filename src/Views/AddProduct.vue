@@ -187,9 +187,7 @@ export default {
         category: this.category,
         images: this.images,
       };
-      if (values) {
         for (var key in values) {
-          if (values.hasOwnProperty(key)) {
             if (values[key] == "" || !values[key].length) {
               this.send = false;
               this.msg = `please enter ${key}`;
@@ -199,9 +197,7 @@ export default {
               this.send = true;
             }
           }
-        }
         this.send == true && this.$store.dispatch("addProduct", values);
-      }
     },
   },
   updated: function () {
@@ -211,5 +207,8 @@ export default {
   },
   beforeUpdate() {},
   computed: {},
+  watch:{
+
+  }
 };
 </script>

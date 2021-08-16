@@ -69,11 +69,13 @@
       <v-btn color="primary" class="btn" @click="submit" elevation="24"
         >Submit</v-btn
       >
+      {{product.name}}
     </div>
   </v-container>
 </template>
 <script>
 import firebase from "firebase";
+import { mapGetters, mapState } from 'vuex';
 
 export default {
   name: "EditProduct",
@@ -162,7 +164,6 @@ export default {
         images: this.images,
         pro_id: this.$route.params.id,
       };
-      if (values) {
         for (var key in values) {
           if (values.hasOwnProperty(key)) {
             if (values[key] == "" || !values[key].length) {
@@ -174,7 +175,6 @@ export default {
               this.send = true;
             }
           }
-        }
         this.send == true && this.$store.dispatch("updateProduct", values);
       }
     },
@@ -189,6 +189,10 @@ export default {
   beforeUpdate() {
     console.log("bef_updated");
   },
-  computed: {},
+  computed: {
+    ...mapState([
+      'product',
+    ])
+  },
 };
 </script>
