@@ -54,9 +54,12 @@ export default {
     function getCookie(cname) {
       var name = cname + "=";
       var decodedCookie = decodeURIComponent(document.cookie);
+
       var ca = decodedCookie.split(";");
+      // console.log('ca==>',JSON.parse(decodedCookie.email))
       for (var i = 0; i < ca.length; i++) {
         var c = ca[i];
+        // console.log('c===>',c)
         while (c.charAt(0) == " ") {
           c = c.substring(1);
         }
