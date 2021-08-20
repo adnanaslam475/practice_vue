@@ -1,13 +1,7 @@
 <template>
-  <v-card class="signup-form">
+  <v-card class="mx-auto auth_card">
     <v-toolbar color="deep-purple accent-4" cards dark flat>
-      <v-card-title
-        class="text-h6 font-weight-regular"
-        style="text-align: center"
-      >
-        Login
-      </v-card-title>
-      <v-spacer></v-spacer>
+      <v-card-title class="text-h6 font-weight-regular"> Log in </v-card-title>
     </v-toolbar>
     <v-form ref="form" class="pa-4 pt-6">
       <v-text-field
@@ -28,23 +22,28 @@
         style="min-height: 96px"
         type="password"
       ></v-text-field>
-      <v-btn
-        type="submit"
-        @click="login"
-        :loading="isloading"
-        class="white--text"
-        color="deep-purple accent-4"
-        depressed
-      >
-        Submit
-      </v-btn>
-      <p>{{ this.$store.state.msg }}</p>
+      <v-card-actions class="action">
+        <v-btn text @click="$refs.myform.reset()"> Clear </v-btn>
+        <transition name="fade">
+          <p style="color: red; margin: 10px">{{ this.$store.state.msg }}</p>
+        </transition>
+        <v-btn
+          type="submit"
+          :loading="isloading"
+          @click="handleSubmit"
+          class="white--text auth_btns1 deep-purple"
+          color="deep-purple accent-4"
+          depressed
+        >
+          Submit
+        </v-btn>
+      </v-card-actions>
     </v-form>
-    <v-divider></v-divider>
   </v-card>
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   name: "Login",
   data: () => ({
@@ -63,11 +62,12 @@ export default {
       required: (v) => !!v || "This field is required",
     },
   }),
-  mounted() {
-    // console.log("login mount",);
+  beforeMount() {
+    this.$store.commit("error", "");
   },
+
   methods: {
-    login(e) {
+    handleSubmit(e) {
       e.preventDefault();
       this.isloading = true;
       this.$store.dispatch("login", {
@@ -77,12 +77,18 @@ export default {
     },
   },
   updated: function () {
-    // console.log(this.$store.state.user);
+    console.log(this.$store.state.user, this.$store.state.msg);
+    // this.$store.commit("error", "");
   },
-  computed: {},
+  computed: {
+    ...mapState(["user"]),
+  },
   watch: {
     "$store.state.user": function () {
-      this.isloading = this.$store.state.user.token && false;
+      this.isloading = false;
+    },
+    "$store.state.msg": function () {
+      this.isloading = false;
     },
   },
 };

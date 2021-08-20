@@ -15,6 +15,7 @@
 }
 .btn{
     margin-right: 10px;
+    float: right !important;
 }
 .text-h6{
     text-align: center;
@@ -73,6 +74,10 @@ min-height: 10vh;
 }
 .v-carousel__controls{
 display: none;
+} 
+.auth_btns1{
+    position: absolute;
+    right: 2%;
 }
 .centerloading{
     display: flex;
@@ -80,10 +85,12 @@ display: none;
     justify-content: center;
 } 
 .v-application {
-    margin-top: 10%;
     max-width: 50%;
     min-height: 100vh;
 }
+.overflow-hidden{
+}
+
 .container{
     min-width: 1%;
 }
@@ -113,21 +120,35 @@ margin: -85px 16px !important;
 .v-menu__content {
     z-index: 10 !important;
 }
-.row{
-    display: flex;
-    align-items: center;
-    flex-direction: row;
+.v-card{
+    min-width: 50%;
 }
-.card{
-    min-width: 30%;
-    margin: 10px;
+
+.auth_card{
+    align-self: center;
+    margin-top:10%;
+}
+.toggle{display: none;}
+@media (max-width:600px){
+    .toggle{
+        display: block;
+    }
+    .auth_btns{
+        display: none;
+    }
+}
+.searches{
+    width: 100%;
+    margin: 5% 0 0 0;
+    padding: 0%;
+     align-items: flex-start;
+     display: flex;
 }
 .theme--light.v-application{
     min-width: 100% !important;
 }
 .lighten-4{
 min-width: 30% !important;
-/* min-height: 80vh; */
     display: inline-block;
 }
 .theme--light.v-skeleton-loader .v-skeleton-loader__avatar,
@@ -153,4 +174,10 @@ min-width: 30% !important;
 }
 .v-skeleton-loader__button{
     width: 5rem ;
+}
+.action{
+    display: flex; 
+ position: relative;
+ align-items: center;
+ width: 100%;
 } 

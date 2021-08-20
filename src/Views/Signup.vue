@@ -1,18 +1,9 @@
   <template>
-  <v-card class="mx-auto" style="max-width: 400px; align-self: center">
-    <v-system-bar color="deep-purple darken-4" dark>
-      <v-spacer></v-spacer>
-      <v-icon small> mdi-square </v-icon>
-      <v-icon class="ml-1" small> mdi-circle </v-icon>
-      <v-icon class="ml-1" small> mdi-triangle </v-icon>
-    </v-system-bar>
+  <v-card class="mx-auto auth_card" >
     <v-toolbar color="deep-purple accent-4" cards dark flat>
-      <v-btn icon>
-        <v-icon>mdi-arrow-left</v-icon>
-      </v-btn>
       <v-card-title class="text-h6 font-weight-regular"> Sign up </v-card-title>
     </v-toolbar>
-    <v-form ref="form" v-model="form" class="pa-4 pt-6">
+    <v-form ref="myform" class="pa-4 pt-6">
       <v-text-field
         v-model="name"
         :rules="[rules.password, rules.length(6)]"
@@ -33,7 +24,6 @@
       ></v-text-field>
       <v-text-field
         v-model="password"
-        :rules="[rules.password, rules.length(6)]"
         filled
         color="deep-purple"
         counter="6"
@@ -49,18 +39,19 @@
         label="Phone number"
       ></v-text-field>
     </v-form>
-    <v-divider></v-divider>
-    <v-card-actions>
-      <v-btn text @click="$refs.form.reset()"> Clear </v-btn>
-      <h2 style="color: red" v-if="this.$store.state.error">
-        {{ this.$store.state.error }}
-      </h2>
-      <v-spacer v-else></v-spacer>
+    <v-card-actions class="action">
+      <v-btn text @click="$refs.myform.reset()"> Clear </v-btn>
+       <transition name="fade">
+       <p style="color: red; margin: 10px">{{ this.$store.state.msg }}</p>
+      </transition>
+
+
+      
       <v-btn
         type="submit"
         :loading="isLoading"
         @click="handleSubmit"
-        class="white--text"
+        class="white--text auth_btns1 deep-purple"
         color="deep-purple accent-4"
         depressed
       >
@@ -71,12 +62,13 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from "vuex";
+// :rules="[rules.password, rules.length(6)]"
 export default {
   name: "SignUp",
   data: () => ({
     name: "",
     email: "",
-    form: false,
     isLoading: false,
     password: "",
     phone: "",
@@ -93,6 +85,9 @@ export default {
       required: (v) => !!v || "This field is required",
     },
   }),
+  beforeMount() {
+    this.$store.commit("error", "");
+  },
   methods: {
     handleSubmit() {
       const values = {
@@ -105,17 +100,22 @@ export default {
       this.$store.dispatch("signup", values);
     },
   },
+  updated() {
+    // console.log("refs-->", this.$refs);
+  },
   mounted() {},
   computed: {
-    msg() {
-      return this.$store.state.error;
-    },
+    ...mapState(["user"]),
   },
   watch: {
     "$store.state.user": function () {
       console.log("watch in signup", this.$store.state.user.token);
-      this.isloading = this.$store.state.user.token && false;
+      this.isLoading = this.$store.state.user.token && false;
       this.$router.push("/");
+    },
+    "$store.state.msg": function () {
+      console.log(this.$store.state.msg);
+      this.isLoading = false;
     },
   },
 };

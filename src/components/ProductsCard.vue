@@ -31,7 +31,7 @@
 
       <div class="my-4 text-subtitle-1">$ • Italian, Cafe</div>
       <div>
-        {{item.description}}
+        {{ item.description }}
       </div>
     </v-card-text>
 
@@ -59,7 +59,7 @@
 <script>
 export default {
   name: "ProductCard",
-   
+
   data: () => ({
     name: "adnan",
   }),
@@ -69,11 +69,11 @@ export default {
 
   methods: {
     details(e) {
-      this.$router.push({ name: `/product/${e}` }).catch(()=>{});
+      this.$router.push({ name: `/product/${e}` }).catch((e) => {
+        console.log("e in 72", e);
+      });
     },
-    edit(id) {
-      cosnole.log("item---.", id);
-    },
+     
     deleteItem(e) {
       cosnole.log("itemtodelet-->---.", e);
       this.$store.dispatch("deleteProduct", e);

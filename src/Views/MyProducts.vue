@@ -62,15 +62,13 @@ export default {
     isAuthenticated: false,
     user: {},
   }),
-  beforeMount() {
-    this.myproducts = this.$store.state.products.filter(
-      (v) => v.id === this.user.id
-    );
-  },
+  // beforeMount() {
+  //   this.myproducts = this.$store.state.products.filter(
+  //     (v) => v.id === this.user.id
+  //   );
+  // },
   methods: {
-    handleRoute(r) {
-      this.$router.push(`/${r}`).catch(() => {});
-    },
+     
     edit(id) {
       this.$router.push(`/add-product`, { id });
     },

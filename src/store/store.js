@@ -3,6 +3,7 @@ import Vuex from "vuex";
 import { db } from '../main';
 import router from '../../router';
 import firebase from 'firebase';
+import { MUTATE } from './actionTypes'
 
 
 Vue.use(Vuex);
@@ -10,34 +11,60 @@ const store = new Vuex.Store({
     state: {
         user: null,
         msg: '',
+        error: false,
+        num: 0,
         product: {},
         products: [],
         time: new Date().getTime().toLocaleString(),
-        signup_success: ''
+        signup_success: '',
+        itemDetails: {}
     },
     mutations: {
-        auth(state, msg) {
+        mutating(state, msg) {
+            console.log('mutating')
+        },
+        success(state, msg) {
             console.log(msg)
             state.msg = msg;
+            state.error = true
+        },
+        error(state, msg) {
+            state.msg = msg;
+            state.error = msg && true
         },
         user(state, userdata) {
             state.user = userdata;
-            router.push('/');
+            if (userdata?.token) {
+                if (window.location.pathname !== '/')
+                    router.push('/').catch(e => {
+                        console.log('in 33', e)
+                    })
+            };
         },
         editproduct(state, product) {
             state.product = product;
         },
         signup(state, msg) {
-            // console.log('u_data===>', msg);
+            state.user = msg;
+            console.log('run37')
             router.push('/');
         },
         productData(state, obj) {
-            state.products.unshift(obj)
+            state.products.unshift(obj);
+            router.push('/');
         },
         Products(state, prods) {
             state.msg = ''
             state.products = prods;
-        }
+            console.log(prods)
+        },
+        itemDetails(state, details) {
+            state.itemDetails = details
+            console.log('details----<', details)
+        },
+        // [MUTATE](state, msg) {
+        //     console.log('m==>', msg)
+        // }
     },
     actions: {
         async signup({ }, inputValues) {
@@ -56,11 +83,11 @@ const store = new Vuex.Store({
                     const errorId = resData.error.message
                     let errorMsg = ''
                     if (errorId === 'EMAIL_EXISTS') {
-                        store.commit('auth', 'This email is already in used',
+                        store.commit('error', 'This email is already in used',
                             { root: true })
                     }
                     else {
-                        store.commit('auth', 'Something went wrong, Network Error',
+                        store.commit('error', 'Something went wrong, Network Error',
                             { root: true })
                         throw new Error(errorMsg)
                     }
@@ -76,11 +103,12 @@ const store = new Vuex.Store({
                     }
                     var expires = "expires=" + d.toUTCString();
                     document.cookie = 'user' + "=" + JSON.stringify(user) + ";" + expires + ";path=/";
-                    store.commit('singup', resData,
+                    console.log('res===>105', resData)
+                    store.commit('signup', user,
                         { root: true });
                 }
             } catch (error) {
-                store.commit('auth', 'something went wrong',
+                store.commit('error', 'something went wrong',
                     { root: true })
             }
         },
@@ -100,7 +128,8 @@ const store = new Vuex.Store({
                 })
                 const data = await res.json();
                 if (data.error?.errors) {
-                    commit('auth', data.error.message,
+                    console.log(data.error)
+                    commit('error', data.error.message,
                         { root: true })
                 }
                 else {
@@ -117,8 +146,9 @@ const store = new Vuex.Store({
                         { root: true });
                 }
             } catch (error) {
-                store.commit('auth', user,
-                { root: true });
+                // console.log(error)
+                store.commit('error', 'something went wrong',
+                    { root: true });
             }
         },
         async addProduct({ }, inputValues) {
@@ -133,7 +163,7 @@ const store = new Vuex.Store({
                     store.commit('productData', { ...e.data(), id: e.id }, { root: true });
                 })
             } catch (error) {
-                store.commit('auth', 'something Went wrong, try again', { root: true })
+                store.commit('error', 'something Went wrong, try again', { root: true })
             }
         },
         async ProductsAction({ }) {
@@ -145,13 +175,14 @@ const store = new Vuex.Store({
                 })
                 store.commit('Products', arr, { root: true })
             } catch (error) {
-                store.commit('auth', 'something Went wrong, try again', { root: true })
+                store.commit('error', 'something Went wrong, try again', { root: true })
             }
         },
         SetCurrentUser({ }, user) {
             firebase
                 .auth()
                 .onAuthStateChanged(function (user) {
+                    console.log(user)
                 })
             store.commit('user', user, { root: true })
         },
@@ -168,7 +199,7 @@ const store = new Vuex.Store({
                 setCookie("user", JSON.stringify(current_user));
                 store.commit('user', current_user, { root: true })
             } catch (error) {
-                store.commit('auth', 'something went wrong, cannot logout successfully', { root: true })
+                store.commit('error', 'something went wrong, cannot logout successfully', { root: true })
             }
         },
         async deleteProduct({ }, id) {
@@ -176,28 +207,28 @@ const store = new Vuex.Store({
                 const res = await db.collection('products').doc(`${id}`).delete();
                 res && store.commit('Products', store.state.products.filter(v => v.id !== id),
                     { root: true })
-                store.commit('msg', 'deleted Successfully', { root: true })
+                store.commit('error', 'deleted Successfully', { root: true })
             } catch (e) {
-                store.commit('auth', 'Something Went Wrong', { root: true });
+                store.commit('error', 'Something Went Wrong', { root: true });
             }
         },
         async updateProduct({ }, v) {
             try {
-                console.log('editin_action', v)
                 const res = await db.collection('products').doc(`${v.pro_id}`).update({
                     name: v.name,
                     description: v.description,
                     images: v.images,
                     price: v.price,
                 });
-                res && store.commit('auth', 'updated Successfully', { root: true })
+                res && store.commit('error', 'updated Successfully', { root: true })
             } catch (error) {
-                store.commit('auth', 'Something Went Wrong,cannot updated', { root: true });
+                store.commit('error', 'Something Went Wrong,cannot updated', { root: true });
             }
         },
         async specificProduct({ }, name) {
             try {
-                let arr = []
+                let arr = [];
+                console.log(name)
                 const res = await db.collection('products').where('category', '==', `${name}`)
                 res.onSnapshot(data => {
                     data.forEach(v => {
@@ -206,12 +237,25 @@ const store = new Vuex.Store({
                 })
                 store.commit('Products', arr, { root: true })
             } catch (error) {
-                store.commit('msg', 'something went wrong', { root: true })
+                store.commit('error', 'something went wrong', { root: true })
             }
+        },
+        async Details({ dispatch, commit }, id) {
+            try {
+                const res = await db.collection('products').doc(id).get()
+                store.commit('itemDetails', res.data(), { root: true })
+            } catch (e) {
+                store.commit('error', 'something went wrong', { root: true })
+            }
+        },
+        mapAction() {
+            console.log('mapActionin action')
         }
     },
     getters: {
-
+        newGetter(state) {
+            return state.num ^ 2;
+        }
     },
     modules: {
     }

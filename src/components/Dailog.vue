@@ -6,7 +6,7 @@
           Delete
         </v-btn>
       </template>
-      <v-card @click="hide()">
+      <v-card>
         <v-card-title class="text-h5 grey lighten-2"> Confirm </v-card-title>
         <v-card-text> Are you sure you want to delete product? </v-card-text>
         <v-divider></v-divider>
@@ -29,12 +29,11 @@ export default {
     show: Boolean,
     id: String,
   },
-  mounted() {
-    console.log("d_moutn");
-  },
+  mounted() {},
 
   methods: {
     emitToParent() {
+      
       this.$emit("childToParent", "adnan");
     },
     closeDialog() {

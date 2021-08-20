@@ -1,11 +1,11 @@
 <template>
   <v-app app>
     <Header />
+    
     <router-view />
     <Footer />
   </v-app>
 </template>
-
 
 <script>
 import Header from "../components/Header";

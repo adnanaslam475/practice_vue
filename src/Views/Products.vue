@@ -1,6 +1,6 @@
 <template>
   <v-container class="lighten-5 width">
-    <div style="width: 100%">
+    <div class="searches">
       <v-btn
         color="primary"
         class="btn"
@@ -8,7 +8,7 @@
         @click="() => searchData(item)"
         :key="index"
         elevation="24"
-        >{{item}}</v-btn
+        >{{ item }}</v-btn
       >
     </div>
     <v-row no-gutters class="row card" v-if="this.$store.state.products.length">
@@ -52,35 +52,27 @@
               <v-chip>{{ item.category }}</v-chip>
             </v-chip-group>
           </v-card-text>
-          <v-card-actions v-if="show_btns">
+          <v-card-actions v-if="this.$store.state.user.token">
             <v-btn
               color="primary"
               class="btn"
-              @click="() => edit(item.id, item)"
+              v-for="(name, i) in action_btns"
+              :key="i"
+              @click="
+                () =>
+                  (name == 'edit' && edit(item.id, item)) ||
+                  (name == 'Details' && Details(item.id)) ||
+                  (name == 'Delete' && show(item.id))
+              "
               elevation="24"
-              >Edit</v-btn
-            >
-            <v-btn
-              color="primary"
-              class="btn"
-              @click="() => Details(item.id)"
-              elevation="24"
-              >Details</v-btn
-            >
-            <v-btn
-              color="primary"
-              class="btn"
-              @click="() => show(item.id)"
-              elevation="24"
-              >Delete</v-btn
+              >{{ name }}</v-btn
             >
           </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
-
     <v-sheet
-      v-else
+      v-else-if="this.$store.state.products.length > 0"
       v-for="(item, i) in skeletons"
       :color="`grey lighten-4`"
       class="pa-3 ma-2"
@@ -92,6 +84,18 @@
         style="min-height: 70vh !important"
       ></v-skeleton-loader>
     </v-sheet>
+    <v-alert
+      border="top"
+      v-else
+      color="red lighten-2"
+      style="margin: 10% 0 0 0px; max-width: 50%"
+      dark
+    >
+      {{
+        this.$store.state.msg ||
+        (this.$store.state.products.length === 0 && "No Products Found")
+      }}
+    </v-alert>
     <Dialog
       :show="showmodal"
       v-on:childToParent="onChildClick"
@@ -102,8 +106,9 @@
   </v-container>
 </template>
 <script>
-//  :color="`grey ${theme.isDark ? 'darken-2' : 'lighten-4'}`"
 import Dialog from "../components/Dailog.vue";
+import { MUTATE } from "../store/actionTypes";
+import { mapState, mapGetters } from "vuex";
 export default {
   name: "Products",
   data: function () {
@@ -113,16 +118,17 @@ export default {
         boilerplate: true,
         elevation: 2,
       },
-      searches: ["Mobile", "Laptop", "Stationary"],
+      searches: ["All", "Mobile", "Laptop", "Stationary"],
+      action_btns: ["Edit", "Details", "Delete"],
       isloading: true,
       isAuthenticated: false,
-      user: {},
       showmodal: false,
       search: "",
       id: "",
       items: [],
       skeletons: ["", "", ""],
       show_btns: false,
+      length: null,
     };
   },
   props: {
@@ -137,10 +143,14 @@ export default {
       this.showmodal = true;
       this.id = id;
     },
+    Details() {
+      this.$store.dispatch("");
+    },
     onChildClick(value) {
       this.showmodal = false;
     },
     Details: function (id) {
+      this.$store.dispatch("Details", id);
       this.$router.push(`/product-details/${id}`);
     },
     handleRoute(r) {
@@ -150,12 +160,20 @@ export default {
       this.$router.push(`edit/${id}`);
       this.$store.commit("editproduct", product);
     },
-    searchData(cat){
-      this.$store.dispatch('specificProduct',cat)
-    }
+    searchData(cat) {
+      if (cat == "All") {
+        this.$store.dispatch("ProductsAction");
+        this.$router.replace({ query: null });
+      } else {
+        this.$store.dispatch("specificProduct", cat);
+        this.$router.replace({
+          query: { category: cat },
+        });
+      }
+    },
   },
   mounted() {
-    this.show_btns = this.$store.state.user.token && true;
+    this.show_btns = this.$store.state.user?.token && true;
   },
   updated() {
     console.log(this.search);
@@ -163,10 +181,13 @@ export default {
   },
   watch: {
     "$store.state.products": function () {
+      this.length =
+        this.$store.state.products.length == 0 && "No product found";
       this.isloading = this.$store.state.products.length > 0 && false;
     },
   },
   computed: {
+    ...mapState(["user"]),
     comp() {
       console.log("in coomputed==>", this.$store.state.user);
       return this.$store.state.products.filter(

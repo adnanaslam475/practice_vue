@@ -8,10 +8,7 @@ import EditProduct from './src/Views/EditProduct.vue';
 import ProductDetails from './src/Views/ProductDetails.vue';
 
 Vue.use(Router);
-
-const routes = [
-
-]
+ 
 const router = new Router({
     mode: "history",
     base: process.env.BASE_URL,

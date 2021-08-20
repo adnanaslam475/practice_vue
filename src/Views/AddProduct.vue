@@ -1,7 +1,7 @@
 <template>
   <v-container style="padding: 0 5% 0 5%">
     <v-text-field
-      v-model="name"
+      v-model.trim="name"
       filled
       color="deep-purple"
       counter="6"
@@ -10,7 +10,7 @@
       type="text"
     ></v-text-field>
     <v-text-field
-      v-model="description"
+      v-model.trim="description"
       filled
       color="deep-purple"
       counter="6"
@@ -19,7 +19,7 @@
       type="text"
     ></v-text-field>
     <v-text-field
-      v-model="price"
+      v-model.trim="price"
       filled
       color="deep-purple"
       counter="6"
@@ -33,7 +33,7 @@
         @change="selectCat"
         label="Select Category"
       >
-        <template v-slot:item="{ item, attrs, on }"  >
+        <template v-slot:item="{ item, attrs, on }">
           <v-list-item v-bind="attrs" v-on="on">
             <v-list-item-title
               :id="attrs['aria-labelledby']"
@@ -43,7 +43,6 @@
         </template>
       </v-select>
     </v-row>
-
     <v-flex md6>
       <div>
         <div>
@@ -76,7 +75,9 @@
       </div>
     </v-flex>
     <div>
-      <p style="color: red">{{ msg }}</p>
+      <transition name="fade">
+        <p style="color: red">{{ msg }}</p>
+      </transition>
       <v-btn color="primary" class="btn" @click="submit" elevation="24"
         >Submit</v-btn
       >
@@ -99,17 +100,15 @@ export default {
     price: "",
     imageData: "",
     send: false,
-    images: [
-      "https://love2dev.com/img/remove-puzzle-pieces-1920x1280.jpg",
-      "https://c8.alamy.com/comp/P401C3/puzzle-head-brain-concept-with-a-jigsaw-piece-cut-out-on-blue-gray-background-P401C3.jpg",
-      "https://thumbs.dreamstime.com/z/human-head-made-puzzle-16632078.jpg",
-    ],
+    images: [],
     msg: "",
     img1: "",
     available: false,
     drgitem: "",
   }),
-  mounted() {},
+  mounted() {
+    // console.log(this)
+  },
 
   methods: {
     selectCat(e) {
@@ -138,7 +137,7 @@ export default {
       this.images.splice(this.drgitem, 1);
       this.images.splice(toIndex, 0, element);
     },
-    
+
     previewImage(e) {
       this.uploadValue = 0;
       this.img1 = null;
@@ -187,17 +186,17 @@ export default {
         category: this.category,
         images: this.images,
       };
-        for (var key in values) {
-            if (values[key] == "" || !values[key].length) {
-              this.send = false;
-              this.msg = `please enter ${key}`;
-              break;
-            } else {
-              this.msg = ``;
-              this.send = true;
-            }
-          }
-        this.send == true && this.$store.dispatch("addProduct", values);
+      for (var key in values) {
+        if (values[key] == "" || !values[key].length) {
+          this.send = false;
+          this.msg = `please enter ${key}`;
+          break;
+        } else {
+          this.msg = ``;
+          this.send = true;
+        }
+      }
+      this.send == true && this.$store.dispatch("addProduct", values);
     },
   },
   updated: function () {
@@ -207,8 +206,11 @@ export default {
   },
   beforeUpdate() {},
   computed: {},
-  watch:{
-
-  }
+  watch: {
+    "$store.state.msg": function () {
+      console.log(this.$store.state.msg);
+      this.$store.state.msg == "NoProducts" && this.$router.push("/");
+    },
+  },
 };
 </script>
