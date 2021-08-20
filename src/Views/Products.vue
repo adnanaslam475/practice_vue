@@ -109,6 +109,7 @@
 import Dialog from "../components/Dailog.vue";
 import { MUTATE } from "../store/actionTypes";
 import { mapState, mapGetters } from "vuex";
+
 export default {
   name: "Products",
   data: function () {
@@ -181,13 +182,14 @@ export default {
   },
   watch: {
     "$store.state.products": function () {
+      console.log(this.$store.state.products);
       this.length =
         this.$store.state.products.length == 0 && "No product found";
       this.isloading = this.$store.state.products.length > 0 && false;
     },
   },
   computed: {
-    ...mapState(["user"]),
+    ...mapState(["user", "products"]),
     comp() {
       console.log("in coomputed==>", this.$store.state.user);
       return this.$store.state.products.filter(

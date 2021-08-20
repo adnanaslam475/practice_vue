@@ -1,6 +1,6 @@
 <template>
   <v-container style="padding: 0px">
-    <v-card class="mx-auto overflow-hidden" style="min-width: 100% !important">
+    <v-card class="mx-auto overflow-hidden sidebar">
       <v-app-bar color="deep-purple" dark>
         <v-app-bar-nav-icon
           class="toggle"
@@ -37,16 +37,36 @@
         <v-list nav dense>
           <v-list-item-group
             v-model="group"
+            v-if="user.token"
             active-class="deep-purple--text text--accent-4"
           >
-            <v-list-item>
+            <v-list-item
+              @click="() => this.$router.push('/add-product').catch(() => {})"
+            >
+              <v-list-item-icon>
+                <v-icon>mdi-home</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Add Product</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="logOut">
+              <v-list-item-icon>
+                <v-icon>mdi-account</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>logout</v-list-item-title>
+            </v-list-item>
+          </v-list-item-group>
+          <v-list-item-group
+            v-model="group"
+            v-else
+            active-class="deep-purple--text text--accent-4"
+          >
+            <v-list-item @click="() => handleRoute('login')">
               <v-list-item-icon>
                 <v-icon>mdi-home</v-icon>
               </v-list-item-icon>
               <v-list-item-title>Login</v-list-item-title>
             </v-list-item>
-
-            <v-list-item>
+            <v-list-item @click="() => handleRoute('signup')">
               <v-list-item-icon>
                 <v-icon>mdi-account</v-icon>
               </v-list-item-icon>

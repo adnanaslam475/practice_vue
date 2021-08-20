@@ -3,7 +3,7 @@ import Vuex from "vuex";
 import { db } from '../main';
 import router from '../../router';
 import firebase from 'firebase';
-import { MUTATE } from './actionTypes'
+// import { MUTATE } from './actionTypes'
 
 
 Vue.use(Vuex);
@@ -20,17 +20,14 @@ const store = new Vuex.Store({
         itemDetails: {}
     },
     mutations: {
-        mutating(state, msg) {
-            console.log('mutating')
-        },
+
         success(state, msg) {
-            console.log(msg)
             state.msg = msg;
             state.error = true
         },
         error(state, msg) {
             state.msg = msg;
-            state.error = msg && true
+            state.error = msg.length && true
         },
         user(state, userdata) {
             state.user = userdata;
@@ -56,7 +53,7 @@ const store = new Vuex.Store({
         Products(state, prods) {
             state.msg = ''
             state.products = prods;
-            console.log(prods)
+            console.log('prods------>', prods)
         },
         itemDetails(state, details) {
             state.itemDetails = details
@@ -89,7 +86,6 @@ const store = new Vuex.Store({
                     else {
                         store.commit('error', 'Something went wrong, Network Error',
                             { root: true })
-                        throw new Error(errorMsg)
                     }
                 }
                 else {
@@ -171,6 +167,7 @@ const store = new Vuex.Store({
                 const res = await db.collection('products').get();
                 let arr = [];
                 res.docs.forEach(v => {
+
                     arr.push({ id: v.id, ...v.data() })
                 })
                 store.commit('Products', arr, { root: true })

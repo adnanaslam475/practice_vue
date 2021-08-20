@@ -1,11 +1,12 @@
   <template>
-  <v-card class="mx-auto auth_card" >
+  <v-card class="mx-auto auth_card">
     <v-toolbar color="deep-purple accent-4" cards dark flat>
       <v-card-title class="text-h6 font-weight-regular"> Sign up </v-card-title>
     </v-toolbar>
     <v-form ref="myform" class="pa-4 pt-6">
       <v-text-field
-        v-model="name"
+        :value="name"
+        @input="onChangeHandler($event, 'name')"
         :rules="[rules.password, rules.length(6)]"
         filled
         color="deep-purple"
@@ -15,7 +16,8 @@
         type="text"
       ></v-text-field>
       <v-text-field
-        v-model="email"
+        :value="email"
+        @input="onChangeHandler($event, 'email')"
         :rules="[rules.email]"
         filled
         color="deep-purple"
@@ -23,7 +25,8 @@
         type="email"
       ></v-text-field>
       <v-text-field
-        v-model="password"
+        :value="password"
+        @input="onChangeHandler($event, 'password')"
         filled
         color="deep-purple"
         counter="6"
@@ -32,8 +35,9 @@
         type="password"
       ></v-text-field>
       <v-text-field
-        v-model="phone"
+        :value="phone"
         filled
+        @input="onChangeHandler($event, 'phone')"
         type="number"
         color="deep-purple"
         label="Phone number"
@@ -41,12 +45,9 @@
     </v-form>
     <v-card-actions class="action">
       <v-btn text @click="$refs.myform.reset()"> Clear </v-btn>
-       <transition name="fade">
-       <p style="color: red; margin: 10px">{{ this.$store.state.msg }}</p>
+      <transition name="fade">
+        <p style="color: red; margin: 10px">{{ msg }}</p>
       </transition>
-
-
-      
       <v-btn
         type="submit"
         :loading="isLoading"
@@ -72,6 +73,7 @@ export default {
     isLoading: false,
     password: "",
     phone: "",
+    msg:'',
     gender: "",
     rules: {
       email: (v) => !!(v || "").match(/@/) || "Please enter a valid email",
@@ -89,6 +91,10 @@ export default {
     this.$store.commit("error", "");
   },
   methods: {
+    onChangeHandler(value, n) {
+      this.msg = "";
+      this.$data[n] = value;
+    },
     handleSubmit() {
       const values = {
         email: this.email,
@@ -114,7 +120,7 @@ export default {
       this.$router.push("/");
     },
     "$store.state.msg": function () {
-      console.log(this.$store.state.msg);
+      this.msg = this.$store.state.msg;
       this.isLoading = false;
     },
   },

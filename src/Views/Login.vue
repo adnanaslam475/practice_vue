@@ -5,15 +5,17 @@
     </v-toolbar>
     <v-form ref="form" class="pa-4 pt-6">
       <v-text-field
-        v-model="email"
+        :value="email"
         :rules="[rules.email]"
         filled
+        @input="onChangeHandler($event, 'email')"
         color="deep-purple"
         label="Email address"
         type="email"
       ></v-text-field>
       <v-text-field
-        v-model="password"
+        :value="password"
+        @input="onChangeHandler($event, 'password')"
         :rules="[rules.password, rules.length(6)]"
         filled
         color="deep-purple"
@@ -25,7 +27,7 @@
       <v-card-actions class="action">
         <v-btn text @click="$refs.myform.reset()"> Clear </v-btn>
         <transition name="fade">
-          <p style="color: red; margin: 10px">{{ this.$store.state.msg }}</p>
+          <p style="color: red; margin: 10px">{{ msg }}</p>
         </transition>
         <v-btn
           type="submit"
@@ -50,6 +52,7 @@ export default {
     email: "",
     password: "",
     isloading: false,
+    msg: "",
     rules: {
       email: (v) => !!(v || "").match(/@/) || "Please enter a valid email",
       length: (len) => (v) =>
@@ -65,9 +68,13 @@ export default {
   beforeMount() {
     this.$store.commit("error", "");
   },
-
   methods: {
+    onChangeHandler(value, n) {
+      this.msg = "";
+      this.$data[n] = value;
+    },
     handleSubmit(e) {
+      this.$store.commit("error", "");
       e.preventDefault();
       this.isloading = true;
       this.$store.dispatch("login", {
@@ -77,8 +84,7 @@ export default {
     },
   },
   updated: function () {
-    console.log(this.$store.state.user, this.$store.state.msg);
-    // this.$store.commit("error", "");
+    console.log(this.$data);
   },
   computed: {
     ...mapState(["user"]),
@@ -89,6 +95,8 @@ export default {
     },
     "$store.state.msg": function () {
       this.isloading = false;
+      console.log("watchin msg", this.$store.state.msg);
+      this.msg = this.$store.state.msg;
     },
   },
 };
